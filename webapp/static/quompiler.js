@@ -18,6 +18,8 @@ scene.add(light);
 
 /****************************************************************/
 
+var winning_text = null;
+
 function textify(message) {
  var loader = new THREE.FontLoader();
  font = loader.load("static/helvetiker_regular.typeface.js",
@@ -45,6 +47,7 @@ function createText(font, message) {
 	text.position.x = -textGeo.boundingBox.max.x/2;
 	text.castShadow = true;
 	scene.add(text);
+	winning_text = text;
 }
 
 /****************************************************************/
@@ -153,7 +156,7 @@ sock.on("update", function(socketData) {
 		mixed_stars = [];
 		for(i = 0; i < new_mixed_stars.length; ++i) {
 			var star_geometry = new THREE.SphereGeometry(0.2, 32, 32);
-			var star_material = new THREE.MeshPhongMaterial({color: new THREE.Color(new_player_colors[i][0], new_player_colors[i][1], new_player_colors[i][2])});
+			var star_material = new THREE.MeshPhongMaterial({transparent: true, opacity: 0.8, color: new THREE.Color(new_player_colors[i][0], new_player_colors[i][1], new_player_colors[i][2])});
 			star_material.side = THREE.BackSide;
 			var star = new THREE.Mesh(star_geometry, star_material);
 			star.position.set(new_mixed_stars[i][0], new_mixed_stars[i][1], new_mixed_stars[i][2]);
@@ -246,6 +249,10 @@ function animate () {
 	    			sock.emit("cmd", {"type": "more_qubits"});
 	    		}
 	    		last = "B";
+	    		if (winning_text != null) {
+	    			winning_text.visible = false;
+	    			winning_text = null;
+	    		}
 	    	} else if(gp["buttons"][2].pressed == true) {
 	    		console.log("X");
 	    	} else if(gp["buttons"][3].pressed == true) {
@@ -254,6 +261,10 @@ function animate () {
 	    			sock.emit("cmd", {"type": "fewer_qubits"});
 	    		}
 	    		last = "Y";
+	    		if (winning_text != null) {
+	    			winning_text.visible = false;
+	    			winning_text = null;
+	    		}
 	    	} else if(gp["buttons"][4].pressed == true) {
 	    		console.log("LB");
 	    		if (last != "LB") {
@@ -280,12 +291,20 @@ function animate () {
 	    			sock.emit("cmd", {"type": "new"});
 	    		}
 	    		last = "START";
+	    		if (winning_text != null) {
+	    			winning_text.visible = false;
+	    			winning_text = null;
+	    		}
 	    	} else if(gp["buttons"][9].pressed == true) {
 	    		console.log("BACK");
 	    		if (last != "BACK") {
 	    			sock.emit("cmd", {"type": "reset"});
 	    		}
 	    		last = "BACK";
+	    		if (winning_text != null) {
+	    			winning_text.visible = false;
+	    			winning_text = null;
+	    		}
 	    	} else if(gp["buttons"][10].pressed == true) {
 	    		console.log("HOME");
 	    		if (last != "HOME") {
