@@ -1,0 +1,50 @@
+<html>
+	<head>
+		<title>quompiler!</title>
+		<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='quompiler.css') }}">
+	</head>
+	<body>
+		<div id="help">
+			<p align="center"><b>QUOMPILER!</b></p>
+			<p align="center">THE GOAL:</p>
+<ul>
+	<li>Try to move the white stars onto the red stars.</li>
+	<li>You control the colorful inner stars.</li>
+</ul>
+<p align="center">CONTROLS:</p>
+<ul>
+	<li>LEFT JOYSTICK: rotate camera</li>
+	<li>RIGHT JOYSTICK: rotate selected inner star </li>
+	<br />
+	<li>LEFT/RIGHT D-PAD: select inner star</li>
+	<br />
+	<li>LEFT BUMPER: view from outside</li>
+	<li>RIGHT BUMPER: view from selected inner star</li>
+	<br />
+	<li>A: select another inner star to tangle with</li>
+	<li>LEFT TRIGGER: untangle</li>
+	<li>RIGHT TRIGGER: tangle</li>
+	<br />
+	<li>HOME: toggle this help window</li>
+	<li>BACK: reset game</li>
+	<li>START: new game</li>
+	<li>Y: fewer qubits</li>
+	<li>B: more qubits</li>
+	<br />
+	<li>NOTE: Works with XBOX 360 controller! Install driver, for Mac, <a href="https://github.com/360Controller/360Controller">here</a>.</li>
+</ul>
+<p align="center">WHY?</p>
+<ul>
+	<li>You are compiling down a complicated quantum computer program, which is a certain unitary operator acting on many qubits at once, into a series of local, elementary operations: rotations of single qubits, and also an entangling operation (CNOT) on only two qubits at a time.</li>
+	<li>HINT: The opacity of the blue sphere ranges from p = 0 to 1, where p is the probability of hopping from the current state to the desired state. It is given by the square of the inner product between the two state vectors. When p = 0, the two states are orthogonal aka at right angles, and the sphere is transparent; when p is close enough to 1, you win!</li> 
+</ul>
+		</div>
+
+		<script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+   		<script src="http://threejs.org/build/three.min.js"></script>
+    	<script src="http://threejs.org/examples/js/controls/OrbitControls.js"></script>
+    	<script src="http://threejs.org/examples/js/controls/DragControls.js"></script>
+    	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.slim.js"></script>
+		<script src="{{ url_for('static', filename='quompiler.js') }}"></script>
+	</body>
+</html>
