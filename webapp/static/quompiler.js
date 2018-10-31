@@ -252,9 +252,15 @@ function animate () {
 	    		if (winning_text != null) {
 	    			winning_text.visible = false;
 	    			winning_text = null;
+	    			winning = 0;
+	    			won = false;
 	    		}
 	    	} else if(gp["buttons"][2].pressed == true) {
 	    		console.log("X");
+	    		if (last != "X") {
+	    			sock.emit("cmd", {"type": "toggle_ai"});
+	    		}
+	    		last = "X";
 	    	} else if(gp["buttons"][3].pressed == true) {
 	    		console.log("Y");
 	    		if (last != "Y") {
@@ -264,6 +270,8 @@ function animate () {
 	    		if (winning_text != null) {
 	    			winning_text.visible = false;
 	    			winning_text = null;
+	    			winning = 0;
+	    			won = false;
 	    		}
 	    	} else if(gp["buttons"][4].pressed == true) {
 	    		console.log("LB");
@@ -294,6 +302,8 @@ function animate () {
 	    		if (winning_text != null) {
 	    			winning_text.visible = false;
 	    			winning_text = null;
+	    			winning = 0;
+	    			won = false;
 	    		}
 	    	} else if(gp["buttons"][9].pressed == true) {
 	    		console.log("BACK");
@@ -304,6 +314,8 @@ function animate () {
 	    		if (winning_text != null) {
 	    			winning_text.visible = false;
 	    			winning_text = null;
+	    			winning = 0;
+	    			won = false;
 	    		}
 	    	} else if(gp["buttons"][10].pressed == true) {
 	    		console.log("HOME");

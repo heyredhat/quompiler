@@ -27,6 +27,33 @@ class Game:
         #self.current_history = []
         self.winning = False
         self.goal_stars = q_SurfaceXYZ(self.desired_state)
+        self.ai_on = False
+
+    def closeness(self):
+        overlap = self.current_state.overlap(self.desired_state)
+        prob = (overlap*np.conjugate(overlap)).real
+        return prob
+
+    def attempt(self, func, vars):
+        old = self.closeness()
+        copy = self.current_state.copy()
+        func(*vars)
+        if self.closeness() < old and random.random() < 0.95:
+            self.current_state = copy
+
+    def ai_move(self):
+        i = random.choice(list(range(self.n_players)))
+        c = random.choice(["x", "y", "z"])
+        if c == "x":
+            self.attempt(self.rotate_player, [i, [1,0,0], (random.random()-0.5)/25.])
+        elif c == "y":
+            self.attempt(self.rotate_player, [i, [0,1,0], (random.random()-0.5)/25.])
+        elif c == "z":
+            self.attempt(self.rotate_player, [i, [0,0,1], (random.random()-0.5)/25.])
+        j = random.choice(list(range(self.n_players))) 
+        while i == j:
+            j = random.choice(list(range(self.n_players)))
+        self.attempt(self.entangle_players, [j, i, (random.random()-0.5), random.choice([True, False])] )
 
     def reset_game(self):
         self.current_state = qt.basis(self.unitary.shape[0], 0)
@@ -76,10 +103,12 @@ class Game:
                  qt.expect(qt.identity(2), mix)*qt.expect(qt.sigmay(), mix),\
                  qt.expect(qt.identity(2), mix)*qt.expect(qt.sigmaz(), mix)] for mix in mixed]
 
-    def rotate_player(self, who, rot, dt=0.01):
+    def rotate_player(self, who, rot, dt=0.01, inverse=False):
         x, y, z = rot
         unitary = (2*math.pi*1j*dt*(x*qt.sigmax() + y*qt.sigmay() + z*qt.sigmaz())).expm()
         total_unitary = upgrade_tensor(unitary, who, self.n_players)
+        if inverse:
+            total_unitary = total_unitary.dag()
         total_unitary.dims = [[total_unitary.shape[0]], [total_unitary.shape[0]]]
         copy = self.current_state.copy()
         if total_unitary.dims[0] == self.current_state.dims[0]:
@@ -137,6 +166,8 @@ def loop():
     global game
     while True:
         #game.current_state = game.unitary*game.current_state
+        if game.ai_on:
+            game.ai_move()
         surface_stars = game.majorana_stars()
         inner_stars = game.mixed_stars()
         overlap = game.current_state.overlap(game.desired_state)
@@ -213,3 +244,5 @@ def cmd(sid, data):
     elif data["type"] == "more_qubits":
         game.more_qubits()
         sio.emit("goal", json.dumps({"goal_stars" : game.goal_stars}))
+    elif data["type"] == "toggle_ai":
+        game.ai_on = True if not game.ai_on else False
