@@ -16,55 +16,7 @@ window.addEventListener('resize', function (event) {
 var light = new THREE.AmbientLight(0xffffff);
 scene.add(light);
 
-var sphere_geometry = new THREE.SphereGeometry(1, 32, 32);
-var sphere_material = new THREE.MeshPhongMaterial({wireframe: true, color: 0x0000ff,  transparent: true});
-var sphere_wire = new THREE.Mesh(sphere_geometry, sphere_material);
-sphere_material.opacity = 0.5;
-sphere_material.side = THREE.BackSide;
-scene.add(sphere_wire);
-
-var sphere_geometry = new THREE.SphereGeometry(1, 32, 32);
-var sphere_material = new THREE.MeshPhongMaterial({color: 0x0000ff,  transparent: true});
-var sphere = new THREE.Mesh(sphere_geometry, sphere_material);
-sphere_material.opacity = 0.5;
-sphere_material.side = THREE.BackSide;
-scene.add(sphere);
-
-var goal_stars = [];
-var majorana_stars = [];
-var mixed_stars = [];
-var me = 0;
-var camera_mode = "sphere";
-var changed = false;
-var last = "";
-var other_selected = -1;
-
-var sock = io.connect(null, {port: location.port, rememberTransport: false});
-
-sock.on("goal", function(socketData) {
-	response = JSON.parse(socketData);
-	var new_goal_stars = response["goal_stars"];
-	// Update majorana stars
-	if (new_goal_stars.length == goal_stars.length) {
-		for (i = 0; i < goal_stars.length; ++i) {
-			goal_stars[i].position.set(new_goal_stars[i][0], new_goal_stars[i][1], new_goal_stars[i][2]);
-		}
-	} else {
-		for(i = 0; i < goal_stars.length; ++i) {
-			scene.remove(goal_stars[i]);
-		}
-		goal_stars = [];
-		for(i = 0; i < new_goal_stars.length; ++i) {
-			var star_geometry = new THREE.SphereGeometry(0.1, 32, 32);
-			var star_material = new THREE.MeshPhongMaterial({color: 0xff0000});
-			var star = new THREE.Mesh(star_geometry, star_material);
-			star.position.set(new_goal_stars[i][0], new_goal_stars[i][1], new_goal_stars[i][2]);
-			goal_stars.push(star);
-			scene.add(star);
-		}
-	}
-});
-
+/****************************************************************/
 
 function textify(message) {
  var loader = new THREE.FontLoader();
@@ -94,6 +46,62 @@ function createText(font, message) {
 	text.castShadow = true;
 	scene.add(text);
 }
+
+/****************************************************************/
+
+var sphere_geometry = new THREE.SphereGeometry(1, 32, 32);
+var sphere_material = new THREE.MeshPhongMaterial({wireframe: true, color: 0x0000ff,  transparent: true});
+var sphere_wire = new THREE.Mesh(sphere_geometry, sphere_material);
+sphere_material.opacity = 0.5;
+sphere_material.side = THREE.BackSide;
+scene.add(sphere_wire);
+
+var sphere_geometry = new THREE.SphereGeometry(1, 32, 32);
+var sphere_material = new THREE.MeshPhongMaterial({color: 0x0000ff,  transparent: true});
+var sphere = new THREE.Mesh(sphere_geometry, sphere_material);
+sphere_material.opacity = 0.5;
+sphere_material.side = THREE.BackSide;
+scene.add(sphere);
+
+/****************************************************************/
+
+var goal_stars = [];
+var majorana_stars = [];
+var mixed_stars = [];
+var me = 0;
+var camera_mode = "sphere";
+var changed = false;
+var last = "";
+var other_selected = -1;
+
+/****************************************************************/
+
+var sock = io.connect(null, {port: location.port, rememberTransport: false});
+
+sock.on("goal", function(socketData) {
+	response = JSON.parse(socketData);
+	var new_goal_stars = response["goal_stars"];
+	// Update majorana stars
+	if (new_goal_stars.length == goal_stars.length) {
+		for (i = 0; i < goal_stars.length; ++i) {
+			goal_stars[i].position.set(new_goal_stars[i][0], new_goal_stars[i][1], new_goal_stars[i][2]);
+		}
+	} else {
+		for(i = 0; i < goal_stars.length; ++i) {
+			scene.remove(goal_stars[i]);
+		}
+		goal_stars = [];
+		for(i = 0; i < new_goal_stars.length; ++i) {
+			var star_geometry = new THREE.SphereGeometry(0.1, 32, 32);
+			var star_material = new THREE.MeshPhongMaterial({color: 0xff0000});
+			var star = new THREE.Mesh(star_geometry, star_material);
+			star.position.set(new_goal_stars[i][0], new_goal_stars[i][1], new_goal_stars[i][2]);
+			goal_stars.push(star);
+			scene.add(star);
+		}
+	}
+});
+
 //textify("WIN!");
 var winning = 0;
 
@@ -109,7 +117,6 @@ sock.on("update", function(socketData) {
 	if (new_win == 1) {
 		winning = 1;
 	}
-
 
 	sphere.material.opacity = new_close;
 	//console.log(new_close);
@@ -146,7 +153,7 @@ sock.on("update", function(socketData) {
 		mixed_stars = [];
 		for(i = 0; i < new_mixed_stars.length; ++i) {
 			var star_geometry = new THREE.SphereGeometry(0.2, 32, 32);
-			var star_material = new THREE.MeshPhongMaterial({roughness: 1, color: new THREE.Color(new_player_colors[i][0], new_player_colors[i][1], new_player_colors[i][2])});
+			var star_material = new THREE.MeshPhongMaterial({color: new THREE.Color(new_player_colors[i][0], new_player_colors[i][1], new_player_colors[i][2])});
 			star_material.side = THREE.BackSide;
 			var star = new THREE.Mesh(star_geometry, star_material);
 			star.position.set(new_mixed_stars[i][0], new_mixed_stars[i][1], new_mixed_stars[i][2]);
@@ -194,14 +201,15 @@ sock.on("update", function(socketData) {
 	}
 });
 
+/****************************************************************/
+
 var counter = 0;
 var won = false;
 function animate () {
 	if (winning == 1 && won == false) {
-		createText("WIN!");
+		textify("WIN!");
 		won = true;
 	}
-
 
 	var gamepads = navigator.getGamepads ? navigator.getGamepads() : (navigator.webkitGetGamepads ? navigator.webkitGetGamepads : []);
 	for (var i = 0; i < gamepads.length; i++) {

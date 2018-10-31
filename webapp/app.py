@@ -141,7 +141,7 @@ def loop():
         inner_stars = game.mixed_stars()
         overlap = game.current_state.overlap(game.desired_state)
         prob = (overlap*np.conjugate(overlap)).real
-        win = 1 if np.isclose(prob, 1, rtol=0.01, atol=0.01) else 0
+        win = 1 if np.isclose(prob, 1, rtol=0.005, atol=0.005) else 0
         for i, sid in enumerate(game.current_players):
             data = {"surface_stars": surface_stars,\
                     "inner_stars": inner_stars,
