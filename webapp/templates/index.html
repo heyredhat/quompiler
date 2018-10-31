@@ -37,13 +37,14 @@
 <ul>
 	<li>You are compiling down a complicated quantum computer program, which is a certain unitary operator acting on many qubits at once, into a series of local, elementary operations: rotations of single qubits, and also an entangling operation (CNOT) on only two qubits at a time.</li>
 	<li>HINT: The opacity of the blue sphere ranges from p = 0 to 1, where p is the probability of hopping from the current state to the desired state. It is given by the square of the inner product between the two state vectors. When p = 0, the two states are orthogonal aka at right angles, and the sphere is transparent; when p is close enough to 1, you win!</li> 
+	<li>More information <a href="https://github.com/heyredhat/quompiler">here.</a></li>
 </ul>
 		</div>
 
 		<script src="https://code.jquery.com/jquery-3.3.1.js"></script>
-   		<script src="http://threejs.org/build/three.min.js"></script>
-    	<script src="http://threejs.org/examples/js/controls/OrbitControls.js"></script>
-    	<script src="http://threejs.org/examples/js/controls/DragControls.js"></script>
+   		<script src="https://threejs.org/build/three.min.js"></script>
+    	<script src="https://threejs.org/examples/js/controls/OrbitControls.js"></script>
+    	<script src="https://threejs.org/examples/js/controls/DragControls.js"></script>
     	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.slim.js"></script>
 		<script src="{{ url_for('static', filename='quompiler.js') }}"></script>
 	</body>
